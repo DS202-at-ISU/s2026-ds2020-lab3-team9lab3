@@ -1,4 +1,3 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/LEAcVKPz)
 
 <!-- README.md is generated from README.Rmd. Please edit the README.Rmd file -->
 
@@ -66,6 +65,33 @@ head(av)
     ## 5                                                      Dies in Fear Itself brought back because that's kind of the whole point. Second death in Time Runs Out has not yet returned
     ## 6                                                                                                                                                                             <NA>
 
+``` r
+str(av)
+```
+
+    ## 'data.frame':    173 obs. of  21 variables:
+    ##  $ URL                        : chr  "http://marvel.wikia.com/Henry_Pym_(Earth-616)" "http://marvel.wikia.com/Janet_van_Dyne_(Earth-616)" "http://marvel.wikia.com/Anthony_Stark_(Earth-616)" "http://marvel.wikia.com/Robert_Bruce_Banner_(Earth-616)" ...
+    ##  $ Name.Alias                 : chr  "Henry Jonathan \"Hank\" Pym" "Janet van Dyne" "Anthony Edward \"Tony\" Stark" "Robert Bruce Banner" ...
+    ##  $ Appearances                : int  1269 1165 3068 2089 2402 612 3458 1456 769 1214 ...
+    ##  $ Current.                   : chr  "YES" "YES" "YES" "YES" ...
+    ##  $ Gender                     : chr  "MALE" "FEMALE" "MALE" "MALE" ...
+    ##  $ Probationary.Introl        : chr  "" "" "" "" ...
+    ##  $ Full.Reserve.Avengers.Intro: chr  "Sep-63" "Sep-63" "Sep-63" "Sep-63" ...
+    ##  $ Year                       : int  1963 1963 1963 1963 1963 1963 1964 1965 1965 1965 ...
+    ##  $ Years.since.joining        : int  52 52 52 52 52 52 51 50 50 50 ...
+    ##  $ Honorary                   : chr  "Full" "Full" "Full" "Full" ...
+    ##  $ Death1                     : chr  "YES" "YES" "YES" "YES" ...
+    ##  $ Return1                    : chr  "NO" "YES" "YES" "YES" ...
+    ##  $ Death2                     : chr  "" "" "" "" ...
+    ##  $ Return2                    : chr  "" "" "" "" ...
+    ##  $ Death3                     : chr  "" "" "" "" ...
+    ##  $ Return3                    : chr  "" "" "" "" ...
+    ##  $ Death4                     : chr  "" "" "" "" ...
+    ##  $ Return4                    : chr  "" "" "" "" ...
+    ##  $ Death5                     : chr  "" "" "" "" ...
+    ##  $ Return5                    : chr  "" "" "" "" ...
+    ##  $ Notes                      : chr  "Merged with Ultron in Rage of Ultron Vol. 1. A funeral was held. " "Dies in Secret Invasion V1:I8. Actually was sent tto Microverse later recovered" "Death: \"Later while under the influence of Immortus Stark committed a number of horrible acts and was killed.'"| __truncated__ "Dies in Ghosts of the Future arc. However \"he had actually used a hidden Pantheon base to survive\"" ...
+
 Get the data into a format where the five columns for Death\[1-5\] are
 replaced by two columns: Time, and Death. Time should be a number
 between 1 and 5 (look into the function `parse_number`); Death is a
@@ -76,6 +102,37 @@ Similarly, deal with the returns of characters.
 
 Based on these datasets calculate the average number of deaths an
 Avenger suffers.
+
+``` r
+library(tidyr)
+library(readr)
+library(dplyr)
+```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+deaths <- av %>% pivot_longer(cols = c(`Death1`,`Death2`,`Death3`,`Death4`,`Death5`),
+                                names_to = "Time",
+                                names_transform = parse_number,
+                                values_to = "Death",
+                                values_transform = tolower) 
+  
+returns <- av %>% pivot_longer(cols = c(`Return1`,`Return2`,`Return3`,`Return4`,`Return5`),
+                                names_to = "Time",
+                                names_transform = parse_number,
+                                values_to = "Return",
+                                values_transform = tolower) 
+```
 
 ## Individually
 
@@ -90,6 +147,12 @@ possible.
 
 > Quote the statement you are planning to fact-check.
 
+## Ishan Nichols:
+
+Quote: “Out of 173 listed Avengers, my analysis found that 69 had died
+at least one time after they joined the team.5 That’s about 40 percent
+of all people who have ever signed on to the team.”
+
 ### Include the code
 
 Make sure to include the code to derive the (numeric) fact for the
@@ -102,3 +165,59 @@ fact-checking endeavor.
 
 Upload your changes to the repository. Discuss and refine answers as a
 team.
+
+First, we will check to make sure the dataset has a matching number of
+173 unique Avengers.
+
+``` r
+str(av)
+```
+
+    ## 'data.frame':    173 obs. of  21 variables:
+    ##  $ URL                        : chr  "http://marvel.wikia.com/Henry_Pym_(Earth-616)" "http://marvel.wikia.com/Janet_van_Dyne_(Earth-616)" "http://marvel.wikia.com/Anthony_Stark_(Earth-616)" "http://marvel.wikia.com/Robert_Bruce_Banner_(Earth-616)" ...
+    ##  $ Name.Alias                 : chr  "Henry Jonathan \"Hank\" Pym" "Janet van Dyne" "Anthony Edward \"Tony\" Stark" "Robert Bruce Banner" ...
+    ##  $ Appearances                : int  1269 1165 3068 2089 2402 612 3458 1456 769 1214 ...
+    ##  $ Current.                   : chr  "YES" "YES" "YES" "YES" ...
+    ##  $ Gender                     : chr  "MALE" "FEMALE" "MALE" "MALE" ...
+    ##  $ Probationary.Introl        : chr  "" "" "" "" ...
+    ##  $ Full.Reserve.Avengers.Intro: chr  "Sep-63" "Sep-63" "Sep-63" "Sep-63" ...
+    ##  $ Year                       : int  1963 1963 1963 1963 1963 1963 1964 1965 1965 1965 ...
+    ##  $ Years.since.joining        : int  52 52 52 52 52 52 51 50 50 50 ...
+    ##  $ Honorary                   : chr  "Full" "Full" "Full" "Full" ...
+    ##  $ Death1                     : chr  "YES" "YES" "YES" "YES" ...
+    ##  $ Return1                    : chr  "NO" "YES" "YES" "YES" ...
+    ##  $ Death2                     : chr  "" "" "" "" ...
+    ##  $ Return2                    : chr  "" "" "" "" ...
+    ##  $ Death3                     : chr  "" "" "" "" ...
+    ##  $ Return3                    : chr  "" "" "" "" ...
+    ##  $ Death4                     : chr  "" "" "" "" ...
+    ##  $ Return4                    : chr  "" "" "" "" ...
+    ##  $ Death5                     : chr  "" "" "" "" ...
+    ##  $ Return5                    : chr  "" "" "" "" ...
+    ##  $ Notes                      : chr  "Merged with Ultron in Rage of Ultron Vol. 1. A funeral was held. " "Dies in Secret Invasion V1:I8. Actually was sent tto Microverse later recovered" "Death: \"Later while under the influence of Immortus Stark committed a number of horrible acts and was killed.'"| __truncated__ "Dies in Ghosts of the Future arc. However \"he had actually used a hidden Pantheon base to survive\"" ...
+
+``` r
+sum(duplicated(av$URL) == TRUE)
+```
+
+    ## [1] 0
+
+Since there are 173 observations and no duplicates, we can confirm that
+the they did analyze 173 Avengers. Now we will check the number of
+Avengers who have at least one death.
+
+``` r
+sum(av$Death1 == "YES")
+```
+
+    ## [1] 69
+
+``` r
+69/173
+```
+
+    ## [1] 0.3988439
+
+There are 69 Avengers who have at least one death, and 69 of of 173 is
+39.88 which rounds to 40%. Therefore, we can confirm that the claim made
+by the quote is accurate.
