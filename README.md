@@ -155,6 +155,29 @@ of all people who have ever signed on to the team.”
 
 ### Include the code
 
+## Bhavika Rathi
+
+> Quote the statement you are planning to fact-check. There’s a 2-in-3
+> chance that a member of the Avengers returned from their first death.
+> \# Look at Time = 1 deaths only first_deaths \<- deaths %\>%
+> filter(toupper(Death) == “YES”, Time == 1)
+
+first_returns \<- returns %\>% filter(toupper(Return) == “YES”, Time ==
+1)
+
+total_first_deaths \<- nrow(first_deaths) total_first_deaths
+
+returned_after_first \<- first_deaths %\>% inner_join(first_returns, by
+= “Name.Alias”) %\>% nrow() returned_after_first
+
+return_rate \<- returned_after_first / total_first_deaths return_rate
+
+cat(sprintf( “Died first time: %dafter first death: %drate:
+%.1f%%claims: ~66.7%%”, total_first_deaths, returned_after_first,
+return_rate \* 100 )) The analysis shows that all avengers who die for
+the first time, 2 out of 3 did return. This claim is supported by the
+data.
+
 Make sure to include the code to derive the (numeric) fact for the
 statement
 
